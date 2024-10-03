@@ -1,0 +1,6 @@
+streamlit
+fpdf
+tensorflow
+tensorflow.keras.preprocessing.image
+numpy
+time
