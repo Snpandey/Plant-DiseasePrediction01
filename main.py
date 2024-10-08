@@ -164,7 +164,7 @@ def display_metrics(disease_name=None):
         st.sidebar.write("Please upload an image and run the prediction to see specific metrics.")
         st.sidebar.text("KFCL Project")
         st.sidebar.text("Developer:- JRF Saurabh Nirala Pandey")
-         st.sidebar.text("Prof Richa Gupta & Dr. Gaurav Verma")
+        st.sidebar.text("Prof Richa Gupta & Dr. Gaurav Verma")
         st.sidebar.text("Contact:-9155028187")
         st.sidebar.text("Email:-pandeysaurabhnirala@gmail.com")
         
