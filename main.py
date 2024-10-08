@@ -146,7 +146,8 @@ def display_metrics(disease_name=None):
         metrics = classification_report_data[disease_name]
         st.sidebar.subheader(f"Metrics for {disease_name}")
         st.sidebar.markdown("<h2 style='font-size:40px;'>KFCL Project</h2>", unsafe_allow_html=True)
-        st.sidebar.markdown("<h3 style='font-size:20px;'>Developer:JRF-Saurabh Nirala Pandey, Prof Richa Gupta & Dr. Gaurav Verma</h3>", unsafe_allow_html=True)
+        st.sidebar.markdown("<h3 style='font-size:20px;'>Developer:JRF-Saurabh Nirala Pandey & </h3>", unsafe_allow_html=True)
+        st.sidebar.markdown("<h3 style='font-size:20px;'>Prof Richa Gupta & Dr. Gaurav Verma</h3>", unsafe_allow_html=True)
         st.sidebar.markdown("<h3 style='font-size:20px;'>Contact: 9155028187</h3>", unsafe_allow_html=True)
         st.sidebar.markdown("<h3 style='font-size:20px;'>Email: pandeysaurabhnirala@gmail.com</h3>", unsafe_allow_html=True)
 
@@ -162,7 +163,8 @@ def display_metrics(disease_name=None):
         st.sidebar.subheader("Model Performance Metrics")
         st.sidebar.write("Please upload an image and run the prediction to see specific metrics.")
         st.sidebar.text("KFCL Project")
-        st.sidebar.text("Developer:- JRF Saurabh Nirala Pandey , Prof Richa Gupta & Dr. Gaurav Verma")
+        st.sidebar.text("Developer:- JRF Saurabh Nirala Pandey")
+         st.sidebar.text("Prof Richa Gupta & Dr. Gaurav Verma")
         st.sidebar.text("Contact:-9155028187")
         st.sidebar.text("Email:-pandeysaurabhnirala@gmail.com")
         
