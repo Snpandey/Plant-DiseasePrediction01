@@ -4,6 +4,7 @@ import tensorflow as tf
 from tensorflow.keras.preprocessing.image import load_img, img_to_array
 import numpy as np
 import time
+from datetime import datetime
 
 # Set page configuration
 st.set_page_config(page_title="UAV-Based Real-Time Plant Disease Detection", layout="wide")
@@ -146,8 +147,7 @@ def display_metrics(disease_name=None):
         metrics = classification_report_data[disease_name]
         st.sidebar.subheader(f"Metrics for {disease_name}")
         st.sidebar.markdown("<h2 style='font-size:40px;'>KFCL Project</h2>", unsafe_allow_html=True)
-        st.sidebar.markdown("<h3 style='font-size:20px;'>Developer:JRF-Saurabh Nirala Pandey & </h3>", unsafe_allow_html=True)
-        st.sidebar.markdown("<h3 style='font-size:20px;'>Prof Richa Gupta & Dr. Gaurav Verma</h3>", unsafe_allow_html=True)
+        st.sidebar.markdown("<h3 style='font-size:20px;'>Developer: Saurabh Nirala Pandey</h3>", unsafe_allow_html=True)
         st.sidebar.markdown("<h3 style='font-size:20px;'>Contact: 9155028187</h3>", unsafe_allow_html=True)
         st.sidebar.markdown("<h3 style='font-size:20px;'>Email: pandeysaurabhnirala@gmail.com</h3>", unsafe_allow_html=True)
 
@@ -162,9 +162,8 @@ def display_metrics(disease_name=None):
     else:
         st.sidebar.subheader("Model Performance Metrics")
         st.sidebar.write("Please upload an image and run the prediction to see specific metrics.")
-        st.sidebar.text("KFCL Project")
-        st.sidebar.text("Developer:- JRF Saurabh Nirala Pandey")
-        st.sidebar.text("Prof Richa Gupta & Dr. Gaurav Verma")
+        st.sidebar.text("KFCL")
+        st.sidebar.text("Developer:-Saurabh Nirala Pandey")
         st.sidebar.text("Contact:-9155028187")
         st.sidebar.text("Email:-pandeysaurabhnirala@gmail.com")
         
@@ -179,85 +178,116 @@ def model_prediction(test_image):
     return result_index
 
 # Function to create the PDF health card
-def create_health_card(result_index):
+# Function to create the PDF health card
+def create_health_card(result_index, uploaded_image_path):
     disease_name = class_names[result_index]
     metrics = classification_report_data[disease_name]
+    current_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     # Create instance of FPDF class
-   #  pdf = FPDF()
-   #  pdf.add_page()
-   #  pdf.set_font("Arial", size=12)
-
-   #  # Add content to the PDF
-   #  pdf.cell(200, 10, txt="Plant Health Card", ln=True, align='C')
-   #  pdf.cell(200, 10, txt=f"Predicted Disease: {disease_name}", ln=True)
-   #  pdf.cell(200, 10, txt=f"Precision: {metrics['precision'] * 100:.2f}%", ln=True)
-   #  pdf.cell(200, 10, txt=f"Recall: {metrics['recall'] * 100:.2f}%", ln=True)
-   #  pdf.cell(200, 10, txt=f"F1 Score: {metrics['f1-score'] * 100:.2f}%", ln=True)
-   # Create instance of FPDF class
     pdf = FPDF()
-
-# Add a page
     pdf.add_page()
 
-# Set title font and color for the main heading
+    # Add margins
+    pdf.set_margins(10, 10, 10)
+
+    # Add a border
+    pdf.rect(5, 5, 200, 287)  # Draw a rectangle for the border
+
+    # Add the JIIT logo at the top center
+    pdf.image("logo_0.png", x=85, y=10, w=30)  # Centered logo
+
+    # Set position for the text below the logo
+    pdf.set_y(50)  # Start text below the logo
+
+    # Set title font and color for the main heading
     pdf.set_font("Arial", size=20)
     pdf.set_text_color(0, 0, 128)  # Dark blue color for the main heading
-    pdf.cell(200, 20, txt="Plant Disease Detection Mechanism", ln=True, align='C')
+    pdf.cell(0, 10, txt="HEALTH CARD REPORT", ln=True, align='C')
+    pdf.cell(0, 10, txt="Plant Disease Detection Mechanism", ln=True, align='C')
 
-# Subtitle
+    # Add current date and time
+    pdf.set_font("Arial", size=12)
+    pdf.set_text_color(0, 0, 0)  # Black color for date and time
+    #pdf.cell(0, 10, txt=f"Date and Time: {current_datetime}", ln=True, align='C')
+
+    # Subtitle with team name
     pdf.set_font("Arial", size=12)
     pdf.set_text_color(0, 102, 204)  # Blue color for the subtitle
-    pdf.multi_cell(0, 10, txt="Developed By JIIT\nUnder the Guidance of Prof. Richa Gupta And Dr. Gaurav Verma\nJRF - Saurabh Nirala Pandey", align='C')
+    pdf.cell(0, 10, txt="Developed by JRF Saurabh Nirala Pandey Under the guidance of", ln=True, align='C')
+    pdf.cell(0, 10, txt="Prof. Richa Gupta & Dr. Gaurav Verma", ln=True, align='C')
 
-# Add a border around the entire page
-    pdf.set_fill_color(240, 240, 240)  # Light grey background
-    pdf.rect(5, 5, 200, 287, 'DF')  # Rectangle around the page (x, y, w, h, style)
+    # Add a line break for spacing
+    pdf.cell(0, 10, '', ln=True)
 
-# Set content font and color
+    # Add Predicted Disease
     pdf.set_font("Arial", size=14)
-    pdf.set_text_color(50, 50, 50)  # Dark grey color for the text
-
-# Set fill color for the content background
-    pdf.set_fill_color(255, 255, 255)  # White background for content
-
-# Predicted Disease
     pdf.set_text_color(0, 153, 76)  # Green color for disease name
-    pdf.cell(0, 10, txt=f"Predicted Disease: {disease_name}", ln=True, align='C', fill=True)
+    pdf.cell(0, 10, txt=f"Predicted Disease: {disease_name}", ln=True, align='C')
+    pdf.cell(0, 10, txt=f"Date and Time: {current_datetime}", ln=True, align='C')
+    # Add a line break for spacing
+    pdf.cell(0, 10, '', ln=True)
 
-# Precision
+    
+    # Add a line break for spacing
+    pdf.cell(0, 10, '', ln=True)
+
+    pdf.cell(0, 5, txt="Confidence Score:----->", ln=True, align='C')
+
+    # Precision
     pdf.set_text_color(255, 102, 102)  # Red color for precision
-    pdf.cell(0, 10, txt=f"Precision: {metrics['precision'] * 100:.2f}%", ln=True, align='C', fill=True)
+    #pdf.cell(0, 10, txt=f"Precision:-- {metrics['precision'] * 100:.2f}%", ln=True,align='R')
+    # Move the text slightly to the left
+    pdf.set_x(pdf.get_x() - 40)  # Move 10 units to the left from the current position
+    pdf.cell(0, 10, txt=f"Precision:----> {metrics['precision'] * 100:.2f}%", ln=True, align='R')
 
-# Recall
+
+    # Recall
     pdf.set_text_color(102, 178, 255)  # Light blue color for recall
-    pdf.cell(0, 10, txt=f"Recall: {metrics['recall'] * 100:.2f}%", ln=True, align='C', fill=True)
+    pdf.cell(0, 10, txt=f"Recall:   ---->   {metrics['recall'] * 100:.2f}%", ln=True,align='R')
 
-# F1 Score
+    # F1 Score
     pdf.set_text_color(255, 178, 102)  # Orange color for F1 Score
-    pdf.cell(0, 10, txt=f"F1 Score: {metrics['f1-score'] * 100:.2f}%", ln=True, align='C', fill=True)
+    pdf.cell(0, 10, txt=f"F1 Score: ----> {metrics['f1-score'] * 100:.2f}%", ln=True,align='R')
 
-# Add footer section
-    pdf.set_y(-30)  # Move to 30 mm from bottom
+    # Accuracy
+    pdf.cell(0, 10, txt="Accuracy:----> 97.00%", ln=True, align='R')
+
+    # Add a line break for spacing before the image
+    pdf.cell(0, 15, '', ln=True)  # Increased space
+
+    # Set position for the uploaded image
+    #pdf.image(uploaded_image_path, x=10, y=pdf.get_y(), w=80)
+    # Adding the image on the right side of the PDF
+    #image_y_position = pdf.get_y()  # Get the current Y position for the image
+    #pdf.image(uploaded_image_path, x=120, y=image_y_position, w=80)  # Move the image to the right side
+    # Adjusting the image position to move it slightly upwards
+    image_y_position = pdf.get_y() - 45  # Move the image 10 units up from the current position
+    pdf.image(uploaded_image_path, x=20, y=image_y_position, w=65)  # Display the image on the right side
+
+
+
+    # Add a line break for spacing
+    pdf.cell(0, 10, '', ln=True)
+
+    # Add footer section
+    pdf.set_y(-53)  # Move to 40 mm from bottom
     pdf.set_font("Arial", size=10)
     pdf.set_text_color(0, 0, 128)  # Dark blue color for footer
-    pdf.multi_cell(0, 10, txt="Contact us:\nEmail: pandeysaurabhnirala@gmail.com\nMobile: 9155028187\nFeel free to contact", align='C')
+    pdf.multi_cell(0, 5, txt="Developed By JIIT Team JRF:-Saurabh N. Pandey, Prof. Richa Gupta & Dr.Gaurav Verma", align='C')
+    pdf.multi_cell(0, 5, txt="Contact us:\nEmail: pandeysaurabhnirala@gmail.com\nMobile: 9155028187\nFeel free to contact", align='C')
 
-# Copyright notice
-    pdf.set_y(-15)  # Move to 15 mm from bottom
+    # Copyright notice
+    pdf.set_y(-31)  # Move to 15 mm from bottom
     pdf.set_font("Arial", size=8)
     pdf.set_text_color(128, 128, 128)  # Grey color for copyright
     pdf.cell(0, 10, txt="© All rights reserved by the developer.", ln=True, align='C')
-
-# Output the PDF
-    pdf.output("plant_health_card.pdf")
 
     # Save the PDF
     pdf_filename = f"health_card_{int(time.time())}.pdf"
     pdf.output(pdf_filename)
 
     return pdf_filename
-
 # Navigation Pages
 if page == "Home":
     st.header("Development Of UAV-Based Real Time Plant Disease Detection Mechanism")
@@ -321,30 +351,59 @@ elif page == "About":
     innovative project.
     """)
 
-elif page == "Disease Recognition":
-    st.title("Disease Recognition")
-    uploaded_file = st.file_uploader("Upload an image...", type=["jpg", "jpeg", "png"])
-    if uploaded_file is not None:
-        st.image(uploaded_file, caption='Uploaded Image', use_column_width=False, width=300)
-        st.write("Classifying...")
-        result_index = model_prediction(uploaded_file)
-        disease_name = class_names[result_index]
-        st.success(f'Prediction: {disease_name}')
+# elif page == "Disease Recognition":
+#     st.title("Disease Recognition")
+#     uploaded_file = st.file_uploader("Upload an image...", type=["jpg", "jpeg", "png"])
+#     if uploaded_file is not None:
+#         st.image(uploaded_file, caption='Uploaded Image', use_column_width=False, width=300)
+#         st.write("Classifying...")
+#         result_index = model_prediction(uploaded_file)
+#         disease_name = class_names[result_index]
+#         st.success(f'Prediction: {disease_name}')
 
-        # Display metrics for the predicted disease
+#         # Display metrics for the predicted disease
+#         display_metrics(disease_name)
+
+#         # Create and display health card PDF
+#         pdf_filename = create_health_card(result_index)
+#         with open(pdf_filename, "rb") as file:
+#             btn = st.download_button(
+#                 label="Download Health Card",
+#                 data=file,
+#                 file_name=pdf_filename,
+#                 mime="application/octet-stream"
+#             )
+#     else:
+#         display_metrics()
+elif page == "Disease Recognition":
+    st.header("Disease Recognition")
+
+    uploaded_file = st.file_uploader("Upload an image of the plant leaf", type=["jpg", "jpeg", "png"])
+
+    if uploaded_file is not None:
+        with open("uploaded_image.jpg", "wb") as f:
+            f.write(uploaded_file.getbuffer())
+      #   st.image("uploaded_image.jpg", caption="Uploaded Image", use_column_width=True)
+        st.image(uploaded_file, caption='Uploaded Image', use_column_width=False, width=300)
+
+        result_index = model_prediction("uploaded_image.jpg")
+        disease_name = class_names[result_index]
+
+        st.subheader(f"The predicted disease is: {disease_name}")
         display_metrics(disease_name)
 
-        # Create and display health card PDF
-        pdf_filename = create_health_card(result_index)
-        with open(pdf_filename, "rb") as file:
-            btn = st.download_button(
-                label="Download Health Card",
-                data=file,
-                file_name=pdf_filename,
-                mime="application/octet-stream"
-            )
-    else:
-        display_metrics()
+        # Generate PDF health card
+        if st.button("Generate Health Card"):
+            pdf_path = create_health_card(result_index, "uploaded_image.jpg")
+            st.success(f"Health Card generated: {pdf_path}")
+            with open(pdf_path, "rb") as file:
+                st.download_button(
+                    label="Download Health Card",
+                    data=file,
+                    file_name=pdf_path,
+                    mime="application/pdf"
+                )
+
 
 elif page == "Train":
     st.title("Train")
