@@ -184,7 +184,7 @@ def create_health_card(result_index, uploaded_image_path):
     metrics = classification_report_data[disease_name]
     current_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    # Create instance of FPDF class
+    # Create an instance of FPDF class
     pdf = FPDF()
     pdf.add_page()
 
@@ -209,7 +209,7 @@ def create_health_card(result_index, uploaded_image_path):
     # Add current date and time
     pdf.set_font("Arial", size=12)
     pdf.set_text_color(0, 0, 0)  # Black color for date and time
-    #pdf.cell(0, 10, txt=f"Date and Time: {current_datetime}", ln=True, align='C')
+    pdf.cell(0, 10, txt=f"Date and Time: {current_datetime}", ln=True, align='C')
 
     # Subtitle with team name
     pdf.set_font("Arial", size=12)
@@ -224,51 +224,41 @@ def create_health_card(result_index, uploaded_image_path):
     pdf.set_font("Arial", size=14)
     pdf.set_text_color(0, 153, 76)  # Green color for disease name
     pdf.cell(0, 10, txt=f"Predicted Disease: {disease_name}", ln=True, align='C')
-    pdf.cell(0, 10, txt=f"Date and Time: {current_datetime}", ln=True, align='C')
-    # Add a line break for spacing
+
+    # Add some space before the image
     pdf.cell(0, 10, '', ln=True)
 
-    
-    # Add a line break for spacing
-    pdf.cell(0, 10, '', ln=True)
+    # Add the uploaded image below the predicted disease, centered, and reduce size
+    image_y_position = pdf.get_y()  # Position the image below the text
+    image_width = 60  # Reduced image width for a smaller display
+    image_height = 45  # Adjust image height proportionally
+    pdf.image(uploaded_image_path, x=(210 - image_width) / 2, y=image_y_position, w=image_width, h=image_height)
 
-    pdf.cell(0, 5, txt="Confidence Score:----->", ln=True, align='C')
+    # Update Y position after the image for table placement
+    pdf.set_y(image_y_position + image_height + 10)  # Add spacing below the image
 
-    # Precision
-    pdf.set_text_color(255, 102, 102)  # Red color for precision
-    #pdf.cell(0, 10, txt=f"Precision:-- {metrics['precision'] * 100:.2f}%", ln=True,align='R')
-    # Move the text slightly to the left
-    pdf.set_x(pdf.get_x() - 40)  # Move 10 units to the left from the current position
-    pdf.cell(0, 10, txt=f"Precision:----> {metrics['precision'] * 100:.2f}%", ln=True, align='R')
+    # Add a 4x2 table for metrics
+    pdf.set_font("Arial", size=12)
+    pdf.set_text_color(0, 0, 0)  # Black color for table text
 
+    # Table header row
+    pdf.set_fill_color(220, 220, 220)  # Light grey background
+    pdf.cell(95, 10, "Metric", 1, 0, 'C', fill=True)
+    pdf.cell(95, 10, "Value", 1, 1, 'C', fill=True)
 
-    # Recall
-    pdf.set_text_color(102, 178, 255)  # Light blue color for recall
-    pdf.cell(0, 10, txt=f"Recall:   ---->   {metrics['recall'] * 100:.2f}%", ln=True,align='R')
+    # Table content rows
+    pdf.set_fill_color(245, 245, 245)  # Very light grey background
+    pdf.cell(95, 10, "Precision", 1, 0, 'L', fill=True)
+    pdf.cell(95, 10, f"{metrics['precision'] * 100:.2f}%", 1, 1, 'R', fill=True)
 
-    # F1 Score
-    pdf.set_text_color(255, 178, 102)  # Orange color for F1 Score
-    pdf.cell(0, 10, txt=f"F1 Score: ----> {metrics['f1-score'] * 100:.2f}%", ln=True,align='R')
+    pdf.cell(95, 10, "Recall", 1, 0, 'L', fill=True)
+    pdf.cell(95, 10, f"{metrics['recall'] * 100:.2f}%", 1, 1, 'R', fill=True)
 
-    # Accuracy
-    pdf.cell(0, 10, txt="Accuracy:----> 97.00%", ln=True, align='R')
+    pdf.cell(95, 10, "F1 Score", 1, 0, 'L', fill=True)
+    pdf.cell(95, 10, f"{metrics['f1-score'] * 100:.2f}%", 1, 1, 'R', fill=True)
 
-    # Add a line break for spacing before the image
-    pdf.cell(0, 15, '', ln=True)  # Increased space
-
-    # Set position for the uploaded image
-    #pdf.image(uploaded_image_path, x=10, y=pdf.get_y(), w=80)
-    # Adding the image on the right side of the PDF
-    #image_y_position = pdf.get_y()  # Get the current Y position for the image
-    #pdf.image(uploaded_image_path, x=120, y=image_y_position, w=80)  # Move the image to the right side
-    # Adjusting the image position to move it slightly upwards
-    image_y_position = pdf.get_y() - 45  # Move the image 10 units up from the current position
-    pdf.image(uploaded_image_path, x=20, y=image_y_position, w=65)  # Display the image on the right side
-
-
-
-    # Add a line break for spacing
-    pdf.cell(0, 10, '', ln=True)
+    pdf.cell(95, 10, "Accuracy", 1, 0, 'L', fill=True)
+    pdf.cell(95, 10, "97.00%", 1, 1, 'R', fill=True)
 
     # Add footer section
     pdf.set_y(-53)  # Move to 40 mm from bottom
